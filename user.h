@@ -25,6 +25,8 @@ int sleep(int);
 int uptime(void);
 //
 int hello(char*);
+int ticketget();
+int ticketset(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

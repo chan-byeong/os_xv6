@@ -100,3 +100,22 @@ int sys_hello(void){
 
   return 0;
 }
+
+//get tickets
+int
+sys_ticketget(void)
+{
+  return myproc()->tickets;
+}
+
+//set tickets
+int
+sys_ticketset(void)
+{
+  int ticket_num;
+  if(argint(0,&ticket_num) < 0) return -1;
+  else {
+    myproc()->tickets = ticket_num;
+  }
+  return 0;
+}
