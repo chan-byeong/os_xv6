@@ -1,37 +1,52 @@
 #include "types.h"
+#include "stat.h"
 #include "user.h"
-#include "rand.h"
+
 #define NUM_TICKETS 10
 
-void test_process() {
+void long_task() {
   int i, j;
-  for (i = 0; i < 5; i++) {
-    printf(1, "Test Process: Executing iteration %d\n", i);
-    for (j = 0; j < 10000000; j++) {
-      // Busy wait to simulate workload
+  for (i = 0; i < 100000; i++) {
+    for (j = 0; j < 10000; j++) {
+      asm("nop");  // 빈 명령어 실행 (Busy Wait)
     }
   }
+  printf(1, "Long task completed.\n");
   exit();
 }
 
-int main(void) {
-  int i;
+void short_task() {
+  for(int i =0; i < 10000; i++){
+    asm("nop");
+  }
+  printf(1, "Short task completed.\n");
+  exit();
+}
 
-  // Create multiple test processes with different ticket numbers
-  for (i = 0; i < 5; i++) {
-    int pid = fork();
-    if (pid == 0) {
-      // Child process
-      int tickets = get_rand() % NUM_TICKETS + 1; // Assign random ticket number
-      ticketset(tickets); // Set the number of tickets for the process
-      test_process();
-    }
+int main() {
+  int pid;
+
+  printf(1, "Lottery Scheduling Test\n");
+
+  // Long task with 80% of tickets
+  pid = fork();
+  if (pid == 0) {
+    ticketset(NUM_TICKETS * 0.8);
+    long_task();
   }
 
-  // Wait for all child processes to finish
-  for (i = 0; i < 5; i++) {
-    wait();
+  // Short task with 20% of tickets
+  pid = fork();
+  if (pid == 0) {
+    ticketset(NUM_TICKETS * 0.2);
+    short_task();
   }
+
+  // Wait for child processes to complete
+  wait();
+  wait();
+
+  printf(1, "All tasks completed.\n");
 
   exit();
 }
