@@ -9,8 +9,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
-//assignment
-void            hello(char* str);
+
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);
@@ -121,6 +120,8 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int             clone(void (*fcn)(void* , void*), void * , void * , void *);
+int             join(void **);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
